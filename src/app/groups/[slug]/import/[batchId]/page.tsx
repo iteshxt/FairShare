@@ -412,8 +412,8 @@ export default function ImportReportPage({
                 }`}
               >
                 {/* Row Header Info */}
-                <div className="flex flex-col md:flex-row justify-between items-start gap-3 border-b border-stone-50 pb-4 mb-4">
-                  <div>
+                <div className="flex flex-col md:flex-row justify-between items-start gap-3 border-b border-stone-50 pb-4 mb-4 w-full min-w-0">
+                  <div className="min-w-0 flex-1 w-full">
                     <div className="flex items-center gap-2">
                       <span className="text-[10px] font-black text-amber-600 bg-amber-50 border border-amber-150 py-0.5 px-2 rounded-lg uppercase">
                         Row {row.row_index}
@@ -425,13 +425,13 @@ export default function ImportReportPage({
                       )}
                     </div>
 
-                    <h4 className="font-extrabold text-stone-850 text-sm mt-1.5">
+                    <h4 className="font-extrabold text-stone-850 text-sm mt-1.5 break-words">
                       {parsed.description}
                     </h4>
 
                     {/* Raw String */}
-                    <div className="text-[10px] font-mono text-stone-400 mt-1 max-w-[500px] truncate">
-                      Raw CSV: <code>{JSON.stringify(row.raw_data.raw)}</code>
+                    <div className="text-[10px] font-mono text-stone-400 mt-1 w-full break-all whitespace-normal">
+                      Raw CSV: <code className="break-all whitespace-pre-wrap text-stone-550">{JSON.stringify(row.raw_data.raw)}</code>
                     </div>
                   </div>
 
