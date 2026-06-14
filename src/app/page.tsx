@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Plus, Compass, PlusCircle, Home, ArrowRight, AlertTriangle } from "lucide-react";
+import { Logo } from "@/components/Logo";
 
 interface Group {
   id: string;
@@ -103,7 +105,7 @@ export default function DashboardPage() {
       <header className="bg-white border-b-2 border-stone-100 px-4 py-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <span className="text-2xl">🤝</span>
+            <Logo className="w-8 h-8" />
             <span className="text-xl font-black text-stone-800 tracking-tight">FairShare</span>
           </Link>
           <div className="flex items-center gap-4">
@@ -125,7 +127,7 @@ export default function DashboardPage() {
       <main className="max-w-6xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex-1">
         {/* Welcome Block */}
         <div className="bg-gradient-to-r from-amber-400 to-orange-400 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-amber-100/50 border-b-4 border-amber-600 mb-8">
-          <h1 className="text-3xl font-extrabold tracking-tight">Hello, {session?.user?.name}! 👋</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight">Hello, {session?.user?.name}!</h1>
           <p className="mt-2 text-amber-50 max-w-xl text-sm sm:text-base">
             Track expenses together, handle changing memberships seamlessly, and settle debts easily. Let's see how the shares stack up!
           </p>
@@ -138,22 +140,24 @@ export default function DashboardPage() {
             onClick={() => setShowModal(true)}
             className="flex items-center gap-1.5 py-2.5 px-4 bg-amber-500 hover:bg-amber-400 border-b-4 border-amber-600 active:border-b-0 active:translate-y-[4px] text-white text-xs font-bold rounded-2xl transition-all cursor-pointer"
           >
-            <span>+</span> Create Group
+            <Plus className="w-3.5 h-3.5" />
+            <span>Create Group</span>
           </button>
         </div>
 
         {groups.length === 0 ? (
           <div className="bg-white rounded-3xl border-2 border-stone-100 p-12 text-center shadow-sm max-w-lg mx-auto mt-6">
-            <span className="text-4xl block mb-4">⛺</span>
+            <Compass className="w-12 h-12 text-stone-300 mx-auto mb-4" />
             <h3 className="text-lg font-bold text-stone-800">No Groups Found</h3>
             <p className="text-stone-500 text-sm mt-1 mb-6">
               You aren't in any expense sharing groups yet. Create a new one to get started!
             </p>
             <button
               onClick={() => setShowModal(true)}
-              className="py-3 px-6 bg-amber-500 hover:bg-amber-400 border-b-4 border-amber-600 active:border-b-0 active:translate-y-[4px] text-white text-sm font-bold rounded-2xl transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 py-3 px-6 bg-amber-500 hover:bg-amber-400 border-b-4 border-amber-600 active:border-b-0 active:translate-y-[4px] text-white text-sm font-bold rounded-2xl transition-all cursor-pointer"
             >
-              Create Your First Group 🚀
+              <span>Create Your First Group</span>
+              <PlusCircle className="w-4 h-4" />
             </button>
           </div>
         ) : (
@@ -166,7 +170,9 @@ export default function DashboardPage() {
               >
                 <div>
                   <div className="flex justify-between items-start mb-4">
-                    <span className="text-3xl p-2.5 bg-amber-50 rounded-2xl group-hover:scale-110 transition-transform">🏡</span>
+                    <div className="p-2.5 bg-amber-50 rounded-2xl group-hover:scale-110 transition-transform">
+                      <Home className="w-6 h-6 text-amber-500" />
+                    </div>
                     <span className="text-[10px] text-stone-400 font-extrabold tracking-wider uppercase bg-stone-50 py-1 px-2.5 rounded-full border border-stone-150">
                       Active
                     </span>
@@ -180,7 +186,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="mt-6 flex items-center justify-between text-xs font-bold text-amber-600">
                   <span>View Ledger & Balances</span>
-                  <span className="group-hover:translate-x-1 transition-transform">➔</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </div>
               </Link>
             ))}
