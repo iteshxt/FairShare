@@ -26,9 +26,14 @@ This document logs key technical and design decisions, alternatives considered, 
   - Avoids dependencies on external components, making live refactoring/modifications during evaluation simple and direct.
   - Using a warm, vibrant color palette and soft shadows gives a playful, friendly aesthetic (less "corporate SaaS", more "roommate-focused app") that stands out.
 
-## 6. Database Deployment Choice
-- **Decision:** Supabase PostgreSQL for the production environment (instead of Neon).
-- **Reasoning:** Supabase provides reliable hosting and aligns with developer preferences for authentication integrations and Postgres hosting.
+## 6. Database & ORM Choice
+- **Decision:** Use Supabase PostgreSQL with the `@supabase/supabase-js` client directly. No ORM (Prisma was considered and dropped).
+- **Alternatives considered:** Prisma ORM for type-safe queries and migrations.
+- **Reasoning:**
+  - Prisma adds heavy binary downloads, Docker dependency for local dev, and slow cold starts on Vercel.
+  - Supabase JS client connects directly to the hosted Supabase PostgreSQL — zero local infra needed.
+  - Schema is managed via raw SQL (`supabase/schema.sql`) run in the Supabase SQL Editor, giving full control.
+  - For a 2-day MVP, the simplicity of direct SQL + Supabase client wins over ORM abstractions.
 
 ## 7. Responsive Mobile-First Layouts
 - **Decision:** Prioritize mobile responsive layouts for all pages and components.
