@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { ArrowLeft, AlertTriangle, ClipboardList, Check, X, SkipForward, Edit2, Rocket } from "lucide-react";
 
 interface Anomaly {
   id: string;
@@ -338,9 +339,10 @@ export default function ImportReportPage({
           <div className="flex items-center gap-3">
             <Link
               href={`/groups/${slug}/import`}
-              className="text-stone-400 hover:text-stone-800 transition-colors font-bold text-xs"
+              className="inline-flex items-center gap-1.5 text-stone-400 hover:text-stone-800 transition-colors text-xs font-bold"
             >
-              ⇠ Back
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back</span>
             </Link>
           </div>
           <span className="text-sm font-black text-stone-850 tracking-tight">Anomalies Scanning Report</span>
@@ -350,8 +352,9 @@ export default function ImportReportPage({
       {/* Report Dashboard */}
       <main className="max-w-5xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex-1 space-y-6">
         {error && (
-          <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 text-xs font-semibold">
-            ⚠️ {error}
+          <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 text-xs font-semibold">
+            <AlertTriangle className="w-4 h-4 shrink-0" />
+            <span>{error}</span>
           </div>
         )}
 
@@ -359,7 +362,8 @@ export default function ImportReportPage({
         <div className="bg-white rounded-3xl border-2 border-stone-100 p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-sm">
           <div>
             <h2 className="text-lg font-black text-stone-850 flex items-center gap-1.5">
-              <span>📋</span> File Scan Report: <code>{batch?.source_file}</code>
+              <ClipboardList className="w-5 h-5 text-amber-500" />
+              <span>File Scan Report: <code>{batch?.source_file}</code></span>
             </h2>
             <p className="text-xs text-stone-400 font-medium mt-0.5">
               Staged {rows.length} rows successfully. Please resolve details below to finish importing.
@@ -432,42 +436,46 @@ export default function ImportReportPage({
                   </div>
 
                   {/* Approve / Reject / Skip Actions */}
-                  <div className="flex items-center gap-2 self-stretch md:self-auto justify-between border-t md:border-t-0 pt-3.5 md:pt-0 border-stone-100">
+                  <div className="flex flex-wrap items-center gap-2 self-stretch md:self-auto justify-between border-t md:border-t-0 pt-3.5 md:pt-0 border-stone-100">
                     <button
                       onClick={() => setRowStatus(row.id, "APPROVED")}
-                      className={`py-1.5 px-3 rounded-xl text-[10px] font-black cursor-pointer border ${
+                      className={`inline-flex items-center gap-1.5 py-1.5 px-3 rounded-xl text-[10px] font-black cursor-pointer border ${
                         isApproved
                           ? "bg-emerald-50 text-emerald-600 border-emerald-200"
                           : "bg-stone-50 text-stone-400 border-stone-150"
                       }`}
                     >
-                      ✓ Approve
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Approve</span>
                     </button>
                     <button
                       onClick={() => setRowStatus(row.id, "REJECTED")}
-                      className={`py-1.5 px-3 rounded-xl text-[10px] font-black cursor-pointer border ${
+                      className={`inline-flex items-center gap-1.5 py-1.5 px-3 rounded-xl text-[10px] font-black cursor-pointer border ${
                         isRejected
                           ? "bg-rose-50 text-rose-600 border-rose-200"
                           : "bg-stone-50 text-stone-400 border-stone-150"
                       }`}
                     >
-                      ✕ Reject
+                      <X className="w-3.5 h-3.5" />
+                      <span>Reject</span>
                     </button>
                     <button
                       onClick={() => setRowStatus(row.id, "SKIPPED")}
-                      className={`py-1.5 px-3 rounded-xl text-[10px] font-black cursor-pointer border ${
+                      className={`inline-flex items-center gap-1.5 py-1.5 px-3 rounded-xl text-[10px] font-black cursor-pointer border ${
                         isSkipped
                           ? "bg-stone-200 text-stone-700 border-stone-300"
                           : "bg-stone-50 text-stone-400 border-stone-150"
                       }`}
                     >
-                      ⊙ Skip Row
+                      <SkipForward className="w-3.5 h-3.5" />
+                      <span>Skip Row</span>
                     </button>
                     <button
                       onClick={() => handleStartEdit(row)}
-                      className="py-1.5 px-3 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl text-[10px] font-black text-amber-600 cursor-pointer"
+                      className="inline-flex items-center gap-1.5 py-1.5 px-3 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl text-[10px] font-black text-amber-600 cursor-pointer"
                     >
-                      ✍ Edit Inline
+                      <Edit2 className="w-3.5 h-3.5" />
+                      <span>Edit Inline</span>
                     </button>
                   </div>
                 </div>
@@ -500,7 +508,10 @@ export default function ImportReportPage({
                 {/* Inline Editing Form */}
                 {isExpanded && (
                   <div className="bg-stone-50 rounded-2xl p-4 border border-stone-200 animate-in slide-in-from-top-2 duration-150 space-y-4">
-                    <h5 className="font-extrabold text-stone-800 text-xs">✍ Edit Parsed Fields</h5>
+                    <h5 className="inline-flex items-center gap-1.5 font-extrabold text-stone-800 text-xs">
+                      <Edit2 className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Edit Parsed Fields</span>
+                    </h5>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                       <div>
@@ -662,8 +673,9 @@ export default function ImportReportPage({
                 {/* Anomalies Box */}
                 {row.anomalies.length > 0 && (
                   <div className="mt-4 p-3.5 rounded-2xl bg-amber-50/50 border border-amber-100 space-y-1.5">
-                    <p className="text-[10px] font-black text-amber-700 uppercase tracking-wider">
-                      ⚠️ Scan Findings ({row.anomalies.length})
+                    <p className="inline-flex items-center gap-1 text-[10px] font-black text-amber-700 uppercase tracking-wider">
+                      <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                      <span>Scan Findings ({row.anomalies.length})</span>
                     </p>
                     {row.anomalies.map((anom) => (
                       <div key={anom.id} className="text-xs flex items-start gap-1.5">
@@ -695,9 +707,16 @@ export default function ImportReportPage({
           <button
             onClick={handleFinalizeBatch}
             disabled={submitLoading}
-            className="w-full sm:w-auto py-3.5 px-8 bg-amber-500 hover:bg-amber-400 border-b-4 border-amber-600 active:border-b-0 active:translate-y-[4px] text-white text-sm font-bold rounded-2xl transition-all cursor-pointer disabled:opacity-50"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-3.5 px-8 bg-amber-500 hover:bg-amber-400 border-b-4 border-amber-600 active:border-b-0 active:translate-y-[4px] text-white text-sm font-bold rounded-2xl transition-all cursor-pointer disabled:opacity-50"
           >
-            {submitLoading ? "Committing Ledger..." : "Commit Resolved Ledger 🚀"}
+            {submitLoading ? (
+              "Committing Ledger..."
+            ) : (
+              <>
+                <span>Commit Resolved Ledger</span>
+                <Rocket className="w-4 h-4" />
+              </>
+            )}
           </button>
         </div>
       </main>
