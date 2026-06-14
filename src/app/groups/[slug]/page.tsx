@@ -4,6 +4,23 @@ import React, { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { 
+  Home, 
+  UploadCloud, 
+  Plus, 
+  BarChart3, 
+  CreditCard, 
+  Users, 
+  Search, 
+  X, 
+  Calendar, 
+  Lightbulb, 
+  CheckCircle2, 
+  ClipboardList, 
+  AlertTriangle, 
+  Rocket,
+  ArrowRight
+} from "lucide-react";
 
 interface Person {
   id: string;
@@ -440,7 +457,7 @@ export default function GroupDetailPage({
   if (!group) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center bg-[#FDFBF7] p-4 text-center">
-        <span className="text-4xl block mb-4">🔍</span>
+        <Search className="w-12 h-12 text-stone-300 mx-auto mb-4" />
         <h3 className="text-lg font-bold text-stone-850">Group Not Found</h3>
         <p className="text-stone-500 text-sm mt-1 mb-6">This group does not exist or you don't have access.</p>
         <Link href="/" className="py-2.5 px-5 bg-amber-500 text-white rounded-2xl text-xs font-bold shadow-sm">
@@ -456,8 +473,8 @@ export default function GroupDetailPage({
       <header className="bg-white border-b-2 border-stone-100 px-4 py-4 sm:px-6">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/" className="text-stone-400 hover:text-stone-800 transition-colors font-bold text-lg">
-              🏡
+            <Link href="/" className="text-stone-400 hover:text-stone-800 transition-colors">
+              <Home className="w-5 h-5" />
             </Link>
             <span className="text-stone-300">/</span>
             <h1 className="text-lg font-black text-stone-800 tracking-tight">{group.name}</h1>
@@ -466,9 +483,10 @@ export default function GroupDetailPage({
           <div className="flex items-center gap-3">
             <Link
               href={`/groups/${slug}/import`}
-              className="py-2 px-3.5 bg-stone-100 hover:bg-stone-200 text-stone-600 text-xs font-bold rounded-2xl transition-colors cursor-pointer border border-stone-200/50"
+              className="inline-flex items-center gap-1.5 py-2 px-3.5 bg-stone-100 hover:bg-stone-200 text-stone-600 text-xs font-bold rounded-2xl transition-colors cursor-pointer border border-stone-200/50"
             >
-              📥 Import CSV
+              <UploadCloud className="w-3.5 h-3.5" />
+              <span>Import CSV</span>
             </Link>
             <button
               onClick={() => {
@@ -476,9 +494,10 @@ export default function GroupDetailPage({
                 resetExpenseForm();
                 setShowExpenseModal(true);
               }}
-              className="py-2 px-3.5 bg-amber-500 hover:bg-amber-400 border-b-2 border-amber-600 active:border-b-0 active:translate-y-[2px] text-white text-xs font-bold rounded-2xl transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 py-2 px-3.5 bg-amber-500 hover:bg-amber-400 border-b-2 border-amber-600 active:border-b-0 active:translate-y-[2px] text-white text-xs font-bold rounded-2xl transition-all cursor-pointer"
             >
-              + Add Expense
+              <Plus className="w-3.5 h-3.5" />
+              <span>Add Expense</span>
             </button>
           </div>
         </div>
@@ -488,19 +507,32 @@ export default function GroupDetailPage({
       <main className="max-w-6xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex-1">
         {/* Navigation Tabs */}
         <div className="flex border-b-2 border-stone-100 mb-6 gap-2">
-          {(["balances", "expenses", "settlements"] as const).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`py-3 px-4 text-xs font-black uppercase tracking-wider border-b-4 -mb-[2px] transition-all cursor-pointer ${
-                activeTab === tab
-                  ? "border-amber-500 text-amber-600"
-                  : "border-transparent text-stone-400 hover:text-stone-600"
-              }`}
-            >
-              {tab === "balances" ? "📊 Balances & Traces" : tab === "expenses" ? "💸 Expense List" : "🤝 Settlement Log"}
-            </button>
-          ))}
+          {(["balances", "expenses", "settlements"] as const).map((tab) => {
+            const getTabIcon = () => {
+              if (tab === "balances") return <BarChart3 className="w-4 h-4" />;
+              if (tab === "expenses") return <CreditCard className="w-4 h-4" />;
+              return <Users className="w-4 h-4" />;
+            };
+            const getTabLabel = () => {
+              if (tab === "balances") return "Balances & Traces";
+              if (tab === "expenses") return "Expense List";
+              return "Settlement Log";
+            };
+            return (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`inline-flex items-center gap-1.5 py-3 px-4 text-xs font-black uppercase tracking-wider border-b-4 -mb-[2px] transition-all cursor-pointer ${
+                  activeTab === tab
+                    ? "border-amber-500 text-amber-600"
+                    : "border-transparent text-stone-400 hover:text-stone-600"
+                }`}
+              >
+                {getTabIcon()}
+                <span>{getTabLabel()}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Tab 1: Balances & Traces */}
@@ -510,7 +542,8 @@ export default function GroupDetailPage({
             <div className="lg:col-span-2 space-y-6">
               <div className="bg-white rounded-3xl border-2 border-stone-100 p-6 shadow-sm">
                 <h3 className="text-base font-black text-stone-800 mb-4 flex items-center gap-1.5">
-                  <span>📊</span> Net Group Balances
+                  <BarChart3 className="w-4 h-4 text-amber-500" />
+                  <span>Net Group Balances</span>
                 </h3>
                 <div className="divide-y-2 divide-stone-50">
                   {balances.map((bal) => {
@@ -555,9 +588,19 @@ export default function GroupDetailPage({
                             onClick={() => setSelectedTracePerson(
                               selectedTracePerson === bal.personName ? null : bal.personName
                             )}
-                            className="py-1.5 px-3 bg-stone-50 hover:bg-stone-100 text-[10px] font-bold text-stone-500 rounded-xl transition-colors cursor-pointer border border-stone-200/50"
+                            className="inline-flex items-center gap-1 py-1.5 px-3 bg-stone-50 hover:bg-stone-100 text-[10px] font-bold text-stone-500 rounded-xl transition-colors cursor-pointer border border-stone-200/50"
                           >
-                            {selectedTracePerson === bal.personName ? "Hide Trace ✕" : "Audit Trace 🔎"}
+                            {selectedTracePerson === bal.personName ? (
+                              <>
+                                <span>Hide Trace</span>
+                                <X className="w-3 h-3" />
+                              </>
+                            ) : (
+                              <>
+                                <span>Audit Trace</span>
+                                <Search className="w-3 h-3" />
+                              </>
+                            )}
                           </button>
                         </div>
                       </div>
@@ -572,7 +615,8 @@ export default function GroupDetailPage({
                   <div className="flex items-center justify-between mb-4 border-b-2 border-stone-50 pb-3">
                     <div>
                       <h4 className="font-black text-stone-800 text-sm flex items-center gap-1.5">
-                        <span>🔎</span> Explainable Audit Trace: {selectedTracePerson}
+                        <Search className="w-4 h-4 text-amber-500" />
+                        <span>Explainable Audit Trace: {selectedTracePerson}</span>
                       </h4>
                       <p className="text-[10px] text-stone-400 mt-0.5">
                         Trace shows every expense & settlement this member was involved in.
@@ -580,9 +624,10 @@ export default function GroupDetailPage({
                     </div>
                     <button
                       onClick={() => setSelectedTracePerson(null)}
-                      className="text-stone-400 hover:text-stone-600 text-xs font-bold"
+                      className="inline-flex items-center gap-1 text-stone-400 hover:text-stone-600 text-xs font-bold"
                     >
-                      ✕ Close
+                      <X className="w-3.5 h-3.5" />
+                      <span>Close</span>
                     </button>
                   </div>
 
@@ -603,8 +648,11 @@ export default function GroupDetailPage({
                           >
                             <div>
                               <p className="text-xs font-extrabold text-stone-800">{c.description}</p>
-                              <div className="flex flex-wrap gap-x-2 text-[10px] text-stone-400 font-semibold mt-0.5">
-                                <span>📅 {c.date}</span>
+                              <div className="flex flex-wrap gap-x-2 items-center text-[10px] text-stone-400 font-semibold mt-0.5">
+                                <span className="inline-flex items-center gap-1">
+                                  <Calendar className="w-3 h-3" />
+                                  <span>{c.date}</span>
+                                </span>
                                 <span>•</span>
                                 <span>Paid by: {c.paidBy}</span>
                                 <span>•</span>
@@ -655,11 +703,12 @@ export default function GroupDetailPage({
             <div className="space-y-6">
               <div className="bg-white rounded-3xl border-2 border-stone-100 p-6 shadow-sm">
                 <h3 className="text-base font-black text-stone-800 mb-4 flex items-center gap-1.5">
-                  <span>💡</span> Settle Debts (Minimised)
+                  <Lightbulb className="w-4 h-4 text-amber-500 animate-pulse" />
+                  <span>Settle Debts (Minimised)</span>
                 </h3>
                 {simplifiedDebts.length === 0 ? (
                   <div className="py-6 text-center">
-                    <span className="text-3xl block mb-2">🎉</span>
+                    <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
                     <p className="text-xs text-stone-500 font-extrabold">All debts are fully settled!</p>
                   </div>
                 ) : (
@@ -678,7 +727,7 @@ export default function GroupDetailPage({
                         </div>
                         <div className="flex justify-end items-center gap-1 text-[10px] font-bold text-amber-500 opacity-80 group-hover:opacity-100 transition-opacity">
                           <span>Auto-record settlement</span>
-                          <span>➔</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
                         </div>
                       </div>
                     ))}
@@ -687,8 +736,10 @@ export default function GroupDetailPage({
               </div>
 
               {/* Record Settlement Card */}
-              <div className="bg-[#FFFDF9] rounded-3xl border-2 border-amber-200/50 p-6 shadow-sm text-center">
-                <span className="text-3xl block mb-2">💸</span>
+              <div className="bg-[#FFFDF9] rounded-3xl border-2 border-amber-200/50 p-6 shadow-sm text-center flex flex-col items-center">
+                <div className="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-500 mb-3 border border-amber-100">
+                  <CreditCard className="w-6 h-6" />
+                </div>
                 <h4 className="font-black text-stone-800 text-sm mb-1">Made a payment?</h4>
                 <p className="text-[10px] text-stone-400 mb-4">
                   Log a payment to clear off debt and balance the sheets.
@@ -714,7 +765,7 @@ export default function GroupDetailPage({
           <div className="bg-white rounded-3xl border-2 border-stone-100 shadow-sm overflow-hidden">
             {expenses.length === 0 ? (
               <div className="p-12 text-center">
-                <span className="text-4xl block mb-4">📋</span>
+                <ClipboardList className="w-12 h-12 text-stone-350 mx-auto mb-4" />
                 <h4 className="text-lg font-bold text-stone-800">No Expenses Logged</h4>
                 <p className="text-stone-500 text-xs mt-1 mb-6">
                   Add an expense or upload the spreadsheet to start tracking.
@@ -725,9 +776,10 @@ export default function GroupDetailPage({
                     resetExpenseForm();
                     setShowExpenseModal(true);
                   }}
-                  className="py-2.5 px-5 bg-amber-500 text-white rounded-2xl text-xs font-bold shadow-sm"
+                  className="inline-flex items-center gap-1.5 py-2.5 px-5 bg-amber-500 hover:bg-amber-400 text-white rounded-2xl text-xs font-bold shadow-sm cursor-pointer"
                 >
-                  + Add Your First Expense
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add Your First Expense</span>
                 </button>
               </div>
             ) : (
@@ -800,7 +852,7 @@ export default function GroupDetailPage({
           <div className="bg-white rounded-3xl border-2 border-stone-100 shadow-sm overflow-hidden">
             {settlements.length === 0 ? (
               <div className="p-12 text-center">
-                <span className="text-4xl block mb-4">🤝</span>
+                <Users className="w-12 h-12 text-stone-350 mx-auto mb-4" />
                 <h4 className="text-lg font-bold text-stone-800">No Payments Logged</h4>
                 <p className="text-stone-500 text-xs mt-1">
                   Log peer-to-peer payments when members settle their recommended balances.
@@ -852,8 +904,9 @@ export default function GroupDetailPage({
             </h3>
 
             {expenseError && (
-              <div className="p-3 mb-4 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 text-xs font-semibold">
-                ⚠️ {expenseError}
+              <div className="flex items-center gap-2 p-3 mb-4 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 text-xs font-semibold">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+                <span>{expenseError}</span>
               </div>
             )}
 
@@ -1047,9 +1100,21 @@ export default function GroupDetailPage({
                 <button
                   type="submit"
                   disabled={expenseLoading}
-                  className="py-2.5 px-4 bg-amber-500 hover:bg-amber-400 border-b-4 border-amber-600 active:border-b-0 active:translate-y-[4px] text-white text-xs font-bold rounded-2xl transition-all cursor-pointer disabled:opacity-50"
+                  className="inline-flex items-center justify-center gap-1.5 py-2.5 px-4 bg-amber-500 hover:bg-amber-400 border-b-4 border-amber-600 active:border-b-0 active:translate-y-[4px] text-white text-xs font-bold rounded-2xl transition-all cursor-pointer disabled:opacity-50"
                 >
-                  {expenseLoading ? "Saving..." : modalMode === "create" ? "Add Expense 🚀" : "Update Expense 🚀"}
+                  {expenseLoading ? (
+                    "Saving..."
+                  ) : modalMode === "create" ? (
+                    <>
+                      <span>Add Expense</span>
+                      <Rocket className="w-4 h-4" />
+                    </>
+                  ) : (
+                    <>
+                      <span>Update Expense</span>
+                      <Rocket className="w-4 h-4" />
+                    </>
+                  )}
                 </button>
               </div>
             </form>
@@ -1064,8 +1129,9 @@ export default function GroupDetailPage({
             <h3 className="text-lg font-black text-stone-850 tracking-tight mb-2">Record Settlement Payment</h3>
 
             {settleError && (
-              <div className="p-3 mb-4 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 text-xs font-semibold">
-                ⚠️ {settleError}
+              <div className="flex items-center gap-2 p-3 mb-4 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 text-xs font-semibold">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+                <span>{settleError}</span>
               </div>
             )}
 
@@ -1135,9 +1201,16 @@ export default function GroupDetailPage({
                 <button
                   type="submit"
                   disabled={settleLoading}
-                  className="py-2.5 px-4 bg-amber-500 hover:bg-amber-400 border-b-4 border-amber-600 active:border-b-0 active:translate-y-[4px] text-white text-xs font-bold rounded-2xl transition-all cursor-pointer disabled:opacity-50"
+                  className="inline-flex items-center justify-center gap-1.5 py-2.5 px-4 bg-amber-500 hover:bg-amber-400 border-b-4 border-amber-600 active:border-b-0 active:translate-y-[4px] text-white text-xs font-bold rounded-2xl transition-all cursor-pointer disabled:opacity-50"
                 >
-                  {settleLoading ? "Recording..." : "Record Payment 🚀"}
+                  {settleLoading ? (
+                    "Recording..."
+                  ) : (
+                    <>
+                      <span>Record Payment</span>
+                      <Rocket className="w-4 h-4" />
+                    </>
+                  )}
                 </button>
               </div>
             </form>
