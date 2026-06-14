@@ -34,25 +34,8 @@ export async function GET(
     }
 
     const memberIds = (memberships || []).map((m: any) => m.person_id);
-    if (memberIds.length === 0) {
-      return NextResponse.json({
-        balances: [],
-        simplifiedDebts: [],
-        traces: {},
-      });
-    }
 
-    // 3. Fetch all persons in the database
-    const { data: persons, error: pError } = await supabaseAdmin
-      .from("persons")
-      .select("*")
-      .in("id", memberIds);
-
-    if (pError) {
-      return NextResponse.json({ error: pError.message }, { status: 500 });
-    }
-
-    // 4. Fetch active expenses
+    // 3. Fetch active expenses
     const { data: expenses, error: expError } = await supabaseAdmin
       .from("expenses")
       .select("*")
@@ -63,7 +46,7 @@ export async function GET(
       return NextResponse.json({ error: expError.message }, { status: 500 });
     }
 
-    // 5. Fetch expense participants
+    // 4. Fetch expense participants
     const expenseIds = (expenses || []).map((e: any) => e.id);
     let participants: any[] = [];
     if (expenseIds.length > 0) {
@@ -78,7 +61,7 @@ export async function GET(
       participants = partData || [];
     }
 
-    // 6. Fetch settlements
+    // 5. Fetch settlements
     const { data: settlements, error: setError } = await supabaseAdmin
       .from("settlements")
       .select("*")
@@ -86,6 +69,42 @@ export async function GET(
 
     if (setError) {
       return NextResponse.json({ error: setError.message }, { status: 500 });
+    }
+
+    // 6. Collect all involved person IDs (members, payers, participants, receivers)
+    const involvedPersonIds = new Set<string>();
+    memberIds.forEach((id: string) => involvedPersonIds.add(id));
+    (expenses || []).forEach((e: any) => involvedPersonIds.add(e.paid_by_id));
+    (participants || []).forEach((p: any) => involvedPersonIds.add(p.person_id));
+    (settlements || []).forEach((s: any) => {
+      involvedPersonIds.add(s.payer_id);
+      involvedPersonIds.add(s.receiver_id);
+    });
+
+    const uniquePersonIds = Array.from(involvedPersonIds).filter(Boolean);
+
+    let persons: any[] = [];
+    if (uniquePersonIds.length > 0) {
+      const { data: pData, error: pError } = await supabaseAdmin
+        .from("persons")
+        .select("*")
+        .in("id", uniquePersonIds);
+
+      if (pError) {
+        return NextResponse.json({ error: pError.message }, { status: 500 });
+      }
+      persons = pData || [];
+
+      // Auto-heal missing memberships in background / during query
+      const missingMemberIds = uniquePersonIds.filter((id) => !memberIds.includes(id));
+      if (missingMemberIds.length > 0) {
+        const membershipInserts = missingMemberIds.map((pId) => ({
+          group_id: group.id,
+          person_id: pId,
+          joined_at: "2026-02-01",
+        }));
+        await supabaseAdmin.from("group_memberships").insert(membershipInserts);
+      }
     }
 
     // 7. Populate relationships in memory (robust against join anomalies)

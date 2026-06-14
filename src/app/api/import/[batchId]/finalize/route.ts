@@ -46,36 +46,48 @@ export async function POST(
     const resolvePersonId = async (name: string): Promise<string> => {
       const cleanName = name.trim();
       const lowerName = cleanName.toLowerCase();
+      let personId: string;
+
       if (personMap.has(lowerName)) {
-        return personMap.get(lowerName)!;
+        personId = personMap.get(lowerName)!;
+      } else {
+        // Create new person in DB
+        const { data: newPerson, error: createError } = await supabaseAdmin
+          .from("persons")
+          .insert({ name: cleanName })
+          .select()
+          .single();
+
+        if (createError || !newPerson) {
+          throw new Error(`Failed to create person "${cleanName}": ${createError?.message}`);
+        }
+        personId = newPerson.id;
+        personMap.set(lowerName, personId);
       }
 
-      // Create new person in DB
-      const { data: newPerson, error: createError } = await supabaseAdmin
-        .from("persons")
-        .insert({ name: cleanName })
-        .select()
-        .single();
-
-      if (createError || !newPerson) {
-        throw new Error(`Failed to create person "${cleanName}": ${createError?.message}`);
-      }
-
-      // Add new person to group memberships
-      const { error: memError } = await supabaseAdmin
+      // Ensure they have a membership in this group
+      const { data: existingMembership } = await supabaseAdmin
         .from("group_memberships")
-        .insert({
-          group_id: groupId,
-          person_id: newPerson.id,
-          joined_at: "2026-02-01", // Default joined date (start of group)
-        });
+        .select("id")
+        .eq("group_id", groupId)
+        .eq("person_id", personId)
+        .maybeSingle();
 
-      if (memError) {
-        console.error("Error creating group membership for new person:", memError);
+      if (!existingMembership) {
+        const { error: memError } = await supabaseAdmin
+          .from("group_memberships")
+          .insert({
+            group_id: groupId,
+            person_id: personId,
+            joined_at: "2026-02-01", // Default joined date (start of group)
+          });
+
+        if (memError) {
+          console.error("Error creating group membership for person:", memError);
+        }
       }
 
-      personMap.set(lowerName, newPerson.id);
-      return newPerson.id;
+      return personId;
     };
 
     // 3. Fetch imported rows to process
