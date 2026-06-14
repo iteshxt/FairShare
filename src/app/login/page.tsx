@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { AlertTriangle, Rocket, UserPlus } from "lucide-react";
+import { Logo } from "@/components/Logo";
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -71,8 +73,8 @@ export default function LoginPage() {
   return (
     <div className="flex-1 flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-[#FDFBF7]">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-amber-100 text-amber-600 font-bold text-3xl mb-4 shadow-sm border-2 border-amber-200">
-          🤝
+        <div className="inline-flex items-center justify-center mb-4">
+          <Logo className="w-16 h-16 shadow-md shadow-amber-200/50 rounded-2xl" />
         </div>
         <h2 className="text-3xl font-extrabold text-stone-800 tracking-tight">
           {isLogin ? "Welcome back to FairShare!" : "Join FairShare today!"}
@@ -86,8 +88,9 @@ export default function LoginPage() {
         <div className="bg-white py-8 px-6 shadow-xl shadow-stone-200/50 rounded-3xl border-2 border-stone-100 sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
-              <div className="p-3 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 text-sm font-medium">
-                ⚠️ {error}
+              <div className="flex items-center gap-2 p-3 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 text-sm font-medium">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+                <span>{error}</span>
               </div>
             )}
 
@@ -145,9 +148,21 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center py-3.5 px-4 border-b-4 border-amber-600 rounded-2xl shadow-sm text-sm font-bold text-white bg-amber-500 hover:bg-amber-400 active:border-b-0 active:translate-y-[4px] focus:outline-none focus:ring-0 disabled:opacity-50 transition-all cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 border-b-4 border-amber-600 rounded-2xl shadow-sm text-sm font-bold text-white bg-amber-500 hover:bg-amber-400 active:border-b-0 active:translate-y-[4px] focus:outline-none focus:ring-0 disabled:opacity-50 transition-all cursor-pointer"
               >
-                {loading ? "Please wait..." : isLogin ? "Let's Go! 🚀" : "Register & Start 🤝"}
+                {loading ? (
+                  "Please wait..."
+                ) : isLogin ? (
+                  <>
+                    <span>Let's Go!</span>
+                    <Rocket className="w-4 h-4" />
+                  </>
+                ) : (
+                  <>
+                    <span>Register & Start</span>
+                    <UserPlus className="w-4 h-4" />
+                  </>
+                )}
               </button>
             </div>
           </form>
