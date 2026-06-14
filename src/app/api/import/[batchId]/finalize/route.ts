@@ -3,10 +3,10 @@ import { supabaseAdmin } from "@/lib/supabase/server";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { batchId: string } }
+  { params }: { params: Promise<{ batchId: string }> }
 ) {
   try {
-    const { batchId } = params;
+    const { batchId } = await params;
     const body = await req.json();
     const { resolutions } = body; // Map of row_id -> { status, parsed }
 

@@ -3,10 +3,10 @@ import { supabaseAdmin } from "@/lib/supabase/server";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { batchId: string } }
+  { params }: { params: Promise<{ batchId: string }> }
 ) {
   try {
-    const { batchId } = params;
+    const { batchId } = await params;
 
     // 1. Fetch the batch details
     const { data: batch, error: batchError } = await supabaseAdmin

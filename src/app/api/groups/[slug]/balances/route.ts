@@ -4,10 +4,10 @@ import { calculateGroupBalances } from "@/lib/balanceEngine";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { slug } = params;
+    const { slug } = await params;
 
     // 1. Fetch group
     const { data: group, error: gError } = await supabaseAdmin
