@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { ArrowLeft, UploadCloud, AlertTriangle, FileText, Search } from "lucide-react";
 
 export default function ImportPortalPage({
   params: paramsPromise,
@@ -103,7 +104,7 @@ export default function ImportPortalPage({
   if (!group) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center bg-[#FDFBF7] p-4 text-center">
-        <span className="text-4xl block mb-4">🔍</span>
+        <Search className="w-12 h-12 text-stone-300 mx-auto mb-4" />
         <h3 className="text-lg font-bold text-stone-850">Group Not Found</h3>
         <p className="text-stone-500 text-sm mt-1 mb-6 font-semibold">This group does not exist.</p>
         <Link href="/" className="py-2.5 px-5 bg-amber-500 text-white rounded-2xl text-xs font-bold shadow-sm">
@@ -119,8 +120,9 @@ export default function ImportPortalPage({
       <header className="bg-white border-b-2 border-stone-100 px-4 py-4 sm:px-6">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href={`/groups/${slug}`} className="text-stone-400 hover:text-stone-800 transition-colors font-bold text-lg">
-              ⇠ Back to Group
+            <Link href={`/groups/${slug}`} className="inline-flex items-center gap-1.5 text-stone-400 hover:text-stone-800 transition-colors text-xs font-bold">
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Group</span>
             </Link>
           </div>
           <span className="text-sm font-black text-stone-800 tracking-tight">CSV Importer Portal</span>
@@ -129,9 +131,11 @@ export default function ImportPortalPage({
 
       {/* Upload Container */}
       <main className="max-w-4xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex-1 flex flex-col justify-center">
-        <div className="bg-white rounded-3xl border-2 border-stone-100 p-8 shadow-xl shadow-stone-200/50 max-w-lg w-full mx-auto">
-          <div className="text-center mb-6">
-            <span className="text-4xl block mb-3">📥</span>
+        <div className="bg-white rounded-3xl border-2 border-stone-100 p-8 shadow-xl shadow-stone-200/50 max-w-lg w-full mx-auto flex flex-col">
+          <div className="text-center mb-6 flex flex-col items-center">
+            <div className="w-16 h-16 bg-amber-50 rounded-3xl flex items-center justify-center text-amber-500 mb-4 border border-amber-100 shadow-sm">
+              <UploadCloud className="w-8 h-8" />
+            </div>
             <h2 className="text-2xl font-black text-stone-800 tracking-tight">Upload Spreadsheet</h2>
             <p className="text-stone-400 text-xs mt-1">
               Select your historical CSV expense log. We'll automatically identify duplicate payments, inconsistent names, currency updates, and membership timeline overlaps.
@@ -139,14 +143,15 @@ export default function ImportPortalPage({
           </div>
 
           {error && (
-            <div className="p-3.5 mb-6 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 text-xs font-semibold">
-              ⚠️ {error}
+            <div className="flex items-center gap-2 p-3.5 mb-6 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 text-xs font-semibold">
+              <AlertTriangle className="w-4 h-4 shrink-0" />
+              <span>{error}</span>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* File Drop Box */}
-            <div className="border-4 border-dashed border-stone-200 hover:border-amber-400 bg-stone-50/50 hover:bg-amber-50/20 rounded-3xl p-8 text-center transition-all cursor-pointer relative group">
+            <div className="border-4 border-dashed border-stone-200 hover:border-amber-400 bg-stone-50/50 hover:bg-amber-50/20 rounded-3xl p-8 text-center transition-all cursor-pointer relative flex flex-col items-center justify-center group">
               <input
                 type="file"
                 accept=".csv"
@@ -154,7 +159,7 @@ export default function ImportPortalPage({
                 onChange={handleFileChange}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
-              <span className="text-3xl block mb-2 group-hover:scale-110 transition-transform">📄</span>
+              <FileText className="w-10 h-10 text-stone-400 mb-2 group-hover:scale-110 group-hover:text-amber-500 transition-all" />
               <p className="text-xs font-extrabold text-stone-700">
                 {file ? file.name : "Click to browse or drag & drop CSV file"}
               </p>
@@ -167,9 +172,16 @@ export default function ImportPortalPage({
             <button
               type="submit"
               disabled={loading || !file}
-              className="w-full py-3.5 px-4 bg-amber-500 hover:bg-amber-400 border-b-4 border-amber-600 active:border-b-0 active:translate-y-[4px] text-white text-sm font-bold rounded-2xl transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-4 bg-amber-500 hover:bg-amber-400 border-b-4 border-amber-600 active:border-b-0 active:translate-y-[4px] text-white text-sm font-bold rounded-2xl transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? "Parsing & Validating..." : "Stage & Scan Anomalies 🔍"}
+              {loading ? (
+                "Parsing & Validating..."
+              ) : (
+                <>
+                  <span>Stage & Scan Anomalies</span>
+                  <Search className="w-4 h-4" />
+                </>
+              )}
             </button>
           </form>
         </div>
