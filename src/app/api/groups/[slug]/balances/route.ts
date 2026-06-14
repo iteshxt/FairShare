@@ -120,6 +120,9 @@ export async function GET(
 
     return NextResponse.json({
       group,
+      persons,
+      expenses: populatedExpenses,
+      settlements: populatedSettlements,
       ...balanceSummary,
     });
   } catch (error: any) {
