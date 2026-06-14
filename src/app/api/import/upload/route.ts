@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
 
     // 4. Insert imported rows into staging table
     const rowsToInsert = [
-      ...importResult.parsedExpenses.map((exp) => ({
+      ...importResult.parsedExpenses.map((exp: any) => ({
         batch_id: batch.id,
         row_index: exp.rowIndex,
         raw_data: {
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
         },
         status: "PENDING",
       })),
-      ...importResult.settlements.map((set) => ({
+      ...importResult.settlements.map((set: any) => ({
         batch_id: batch.id,
         row_index: set.rowIndex,
         raw_data: {
@@ -108,8 +108,8 @@ export async function POST(req: NextRequest) {
 
     // 5. Insert anomalies into staging table
     if (importResult.anomalies.length > 0) {
-      const anomaliesToInsert = importResult.anomalies.map((anom) => {
-        const row = insertedRows.find((r) => r.row_index === anom.rowIndex);
+      const anomaliesToInsert = importResult.anomalies.map((anom: any) => {
+        const row = insertedRows.find((r: any) => r.row_index === anom.rowIndex);
         return {
           row_id: row ? row.id : insertedRows[0].id, // fallback to first row if index mismatch
           type: anom.type,
