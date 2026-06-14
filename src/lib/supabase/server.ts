@@ -1,7 +1,14 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+let _supabaseAdmin: any = null;
 
-// Server-side client with service role key — bypasses RLS
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+export const supabaseAdmin = new Proxy({} as any, {
+  get(target, prop) {
+    if (!_supabaseAdmin) {
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
+      const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder-key";
+      _supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+    }
+    return Reflect.get(_supabaseAdmin, prop);
+  }
+});
