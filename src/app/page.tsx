@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Plus, Compass, PlusCircle, Home, ArrowRight, AlertTriangle } from "lucide-react";
+import { Plus, Compass, PlusCircle, Home, ArrowRight, AlertTriangle, Rocket } from "lucide-react";
 import { Logo } from "@/components/Logo";
 
 interface Group {
@@ -209,8 +209,9 @@ export default function DashboardPage() {
             </p>
             <form onSubmit={handleCreateGroup} className="space-y-4">
               {error && (
-                <div className="p-3 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 text-xs font-medium">
-                  ⚠️ {error}
+                <div className="flex items-center gap-2 p-3 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 text-xs font-semibold">
+                  <AlertTriangle className="w-4 h-4 shrink-0" />
+                  <span>{error}</span>
                 </div>
               )}
               <input
@@ -236,9 +237,16 @@ export default function DashboardPage() {
                 <button
                   type="submit"
                   disabled={createLoading}
-                  className="py-2.5 px-4 bg-amber-500 hover:bg-amber-400 border-b-4 border-amber-600 active:border-b-0 active:translate-y-[4px] text-white text-xs font-bold rounded-2xl transition-all cursor-pointer disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 py-2.5 px-4 bg-amber-500 hover:bg-amber-400 border-b-4 border-amber-600 active:border-b-0 active:translate-y-[4px] text-white text-xs font-bold rounded-2xl transition-all cursor-pointer disabled:opacity-50"
                 >
-                  {createLoading ? "Creating..." : "Create Group 🚀"}
+                  {createLoading ? (
+                    "Creating..."
+                  ) : (
+                    <>
+                      <span>Create Group</span>
+                      <Rocket className="w-4 h-4" />
+                    </>
+                  )}
                 </button>
               </div>
             </form>
