@@ -34,7 +34,7 @@ export async function GET(
     }
 
     // 3. Fetch all anomalies for the rows in this batch
-    const rowIds = (rows || []).map((r) => r.id);
+    const rowIds = (rows || []).map((r: any) => r.id);
     let anomalies: any[] = [];
 
     if (rowIds.length > 0) {
@@ -50,9 +50,9 @@ export async function GET(
     }
 
     // 4. Combine rows and their anomalies
-    const rowsWithAnomalies = rows.map((row) => ({
+    const rowsWithAnomalies = rows.map((row: any) => ({
       ...row,
-      anomalies: anomalies.filter((a) => a.row_id === row.id),
+      anomalies: anomalies.filter((a: any) => a.row_id === row.id),
     }));
 
     return NextResponse.json({

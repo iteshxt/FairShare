@@ -38,7 +38,7 @@ export async function POST(
     }
 
     const personMap = new Map<string, string>(); // Name (lowercase) -> ID
-    existingPersons?.forEach((p) => {
+    existingPersons?.forEach((p: any) => {
       personMap.set(p.name.toLowerCase().trim(), p.id);
     });
 

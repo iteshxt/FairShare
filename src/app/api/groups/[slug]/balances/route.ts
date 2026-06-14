@@ -33,7 +33,7 @@ export async function GET(
       return NextResponse.json({ error: memError.message }, { status: 500 });
     }
 
-    const memberIds = (memberships || []).map((m) => m.person_id);
+    const memberIds = (memberships || []).map((m: any) => m.person_id);
     if (memberIds.length === 0) {
       return NextResponse.json({
         balances: [],
@@ -64,7 +64,7 @@ export async function GET(
     }
 
     // 5. Fetch expense participants
-    const expenseIds = (expenses || []).map((e) => e.id);
+    const expenseIds = (expenses || []).map((e: any) => e.id);
     let participants: any[] = [];
     if (expenseIds.length > 0) {
       const { data: partData, error: partError } = await supabaseAdmin
@@ -89,13 +89,13 @@ export async function GET(
     }
 
     // 7. Populate relationships in memory (robust against join anomalies)
-    const populatedExpenses = expenses.map((e) => {
-      const paidBy = persons.find((p) => p.id === e.paid_by_id);
+    const populatedExpenses = expenses.map((e: any) => {
+      const paidBy = persons.find((p: any) => p.id === e.paid_by_id);
       const expParts = participants
-        .filter((p) => p.expense_id === e.id)
-        .map((p) => ({
+        .filter((p: any) => p.expense_id === e.id)
+        .map((p: any) => ({
           ...p,
-          person: persons.find((person) => person.id === p.person_id),
+          person: persons.find((person: any) => person.id === p.person_id),
         }));
 
       return {
@@ -105,10 +105,10 @@ export async function GET(
       };
     });
 
-    const populatedSettlements = settlements.map((s) => ({
+    const populatedSettlements = settlements.map((s: any) => ({
       ...s,
-      payer: persons.find((p) => p.id === s.payer_id),
-      receiver: persons.find((p) => p.id === s.receiver_id),
+      payer: persons.find((p: any) => p.id === s.payer_id),
+      receiver: persons.find((p: any) => p.id === s.receiver_id),
     }));
 
     // 8. Calculate balances using core engine
